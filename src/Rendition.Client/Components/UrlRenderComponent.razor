@@ -1,0 +1,63 @@
+
+@using Rendition.Client.Components
+@using PlaywrightSharp
+@using System.ComponentModel.DataAnnotations
+@using Core.Models;
+@using System.Text.Json;
+@using System.Net.Http
+@inject HttpClient Http
+@using Models
+@using Rendition.Core.Interfaces
+@inject IPdfService service
+
+
+<Form Model="@_model" OnFinish="OnFinish">
+    <FormItem>
+        <Input Placeholder="Enter url here" @bind-Value="@context.Url"/>
+    </FormItem>
+    <div style="display:flex;justify-content:flex-end;margin-top:20px;">
+            <Button Type="@ButtonType.Primary"  Loading="busy" HtmlType="submit">
+                @(@busy ? " Generating" : "Generate")
+            </Button>
+        </div>
+</Form>
+
+@if(!busy && response != null)
+{
+    <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.7)">
+        <ResultComponent Response="response">
+
+        </ResultComponent>
+    </Animate>
+}
+ 
+@code
+{
+    private async Task OnFinish(EditContext editContext)
+    {
+        busy = true;
+        response = null;
+        StateHasChanged();
+        var request = new UrlRenderRequest() { Url = _model.Url, Options = Options };
+        response = await service.RenderUrlAsync(request);
+        busy = false;
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public RenderOptionsViewModel Options { get; set; }
+
+    [Parameter]
+    public EventCallback<RenderOptionsViewModel> OptionsChanged { get; set; }
+
+    private bool busy;
+    private RenderResponse response = null;
+    private UrlModel _model = new UrlModel();
+
+    private class UrlModel
+    {
+        [Required(ErrorMessage = "You must enter a valid url")]
+        [Url(ErrorMessage = "You must enter a valid url")]
+        public string Url { get; set; }
+    }
+}

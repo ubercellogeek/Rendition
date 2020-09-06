@@ -1,0 +1,67 @@
+@using Rendition.Client.Components
+@using PlaywrightSharp
+@using System.ComponentModel.DataAnnotations
+@using Core.Models;
+@using System.Text.Json;
+@using System.Net.Http
+@inject HttpClient Http
+@using Models
+@using Rendition.Core.Interfaces
+@inject IPdfService service
+
+
+<Form Model="@_model" OnFinish="OnFinish">
+    <FormItem>
+       <TextArea Placeholder="Enter well-formatted razor syntax here" @bind-Value="@context.Razor" MinRows="3" MaxRows="5"></TextArea>
+    </FormItem>
+    <FormItem>
+         <TextArea Placeholder="Enter the well-formatted JSON model here" @bind-Value="@context.Json" MinRows="3" MaxRows="5"></TextArea>
+    </FormItem>
+    <div style="display:flex;justify-content:flex-end;margin-top:20px;">
+            <Button Type="@ButtonType.Primary"  Loading="busy" HtmlType="submit">
+                @(@busy ? " Generating" : "Generate")
+            </Button>
+        </div>
+</Form>
+
+@if(!busy && response != null)
+{
+    <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.7)">
+        <ResultComponent Response="response">
+
+        </ResultComponent>
+    </Animate>
+}
+ 
+@code
+{
+    private async Task OnFinish(EditContext editContext)
+    {
+
+        busy = true;
+        response = null;
+        StateHasChanged();
+        var request = new RazorRenderRequest() { RazorTemplate = _model.Razor, JsonContent = _model.Json, Options = Options };
+        response = await service.RenderRazorAsync(request);
+        busy = false;
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public RenderOptionsViewModel Options { get; set; }
+
+    [Parameter]
+    public EventCallback<RenderOptionsViewModel> OptionsChanged { get; set; }
+
+    private bool busy;
+    private RenderResponse response = null;
+    private RazorModel _model = new RazorModel();
+
+    private class RazorModel
+    {
+        [Required(ErrorMessage = "You must enter some razor")]
+        public string Razor { get; set; }
+
+        public string Json { get; set; }
+    }
+}

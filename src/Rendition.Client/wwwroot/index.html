@@ -1,24 +1,68 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Rendition.Client</title>
+    <title>Rendition PDF</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/ant-design-blazor.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+    <style>
+        .loading-section {
+            background-color: #000;
+            width: 100%;
+            height: 100%;
+            color: white;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ms-Spinner-circle {
+            box-sizing: border-box;
+            border-radius: 50%;
+            border: 5.5px solid #c7e0f4;
+            border-top-color: #177DDC;
+            animation-name: spinAnimation;
+            animation-duration: 1.3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: cubic-bezier(.53, .21, .29, .67);
+        }
+
+        .ms-Spinner--large {
+            width: 50px;
+            height: 50px;
+        }
+
+        .ms-Spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes spinAnimation{
+            0% {
+                transform: rotate(0deg);
+            } 
+            100%{
+                transform:rotate(360deg);
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <app>Loading...</app>
-
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
+    <app>
+        <div class="loading-section">
+            <div class=" ms-Spinner">
+                <div class="ms-Spinner-circle ms-Spinner--large"></div>
+            </div>
+        </div>
+    </app>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
+    <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
 </body>
-
 </html>

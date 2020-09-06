@@ -1,0 +1,44 @@
+@using Rendition.Core.Models
+@inject NavigationManager manager
+
+@if(Response != null)
+{
+    @if(Response.IsSuccessful)
+    {
+        downloadUrl = manager.BaseUri + $"download/{Response.Id}";
+        viewUrl = manager.BaseUri + $"view/{Response.Id}";
+
+        <Result Status="success"
+            Title=@("PDF Created Successfully")
+            SubTitle=@("Direct url: " + @viewUrl)
+            Extra=extra />
+    }
+    else
+    {
+        <div class="result-pane">
+            <Alert Type="@AlertType.Error"
+                Message="Error"
+                Description="There was an error while tyring to generate the pdf"
+                ShowIcon />
+        </div>
+    }
+}
+
+@code
+{
+    private string downloadUrl;
+    private string viewUrl;
+
+    [Parameter]
+    public RenderResponse Response { get; set; }
+
+    [Parameter]
+    public EventCallback<RenderResponse> ResponseChanged { get; set; }
+
+    RenderFragment extra =>
+    @<Template>
+        <a href="@downloadUrl" class="ant-btn ant-btn-primary ant-btn-large" target="_top">Download</a>
+        <a href="@viewUrl" class="ant-btn ant-btn-default ant-btn-large" target="_blank">View</a>
+    </Template>
+    ;
+}

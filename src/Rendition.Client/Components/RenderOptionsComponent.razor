@@ -1,0 +1,129 @@
+@inherits ComponentBase
+@using PlaywrightSharp
+@using OneOf
+@using Core.Models;
+@using Rendition.Core;
+@using Models;
+
+<Form Model="_value"
+    LabelCol="new ColLayoutParam { Span =12}"
+    WrapperCol="new ColLayoutParam { Span = 16 }">
+    <FormItem Label="Display Header/Footer" Style="margin-bottom:10px;">
+        <Switch @bind-Value="@_value.DisplayHeaderFooter"/>
+    </FormItem>
+    <FormItem Label="Landscape" Style="margin-bottom:10px;">
+        <Switch @bind-Value="@_value.Landscape"/>
+    </FormItem>
+     <FormItem Label="Print Background" Style="margin-bottom:10px;">
+        <Switch @bind-Value="@_value.PrintBackground"/>
+    </FormItem>
+    <FormItem Label="Prefer CSS Page Size" Style="margin-bottom:10px;">
+        <Switch @bind-Value="@_value.PreferCSSPageSize"/>
+    </FormItem>
+    <FormItem Label="Scale" Style="margin-bottom:10px;">
+        <AntDesign.InputNumber @bind-Value="@_value.Scale" Step="0.1" Min="0.1" Max="2.0"/>
+    </FormItem>
+    <FormItem Label="Pages" Style="margin-bottom:10px;">
+        <Select Style="width:120px" OnChange="OnPageRangeChange" DefaultValue="@PageRangeType.All.ToString()" @bind-Value="@_value.RangeStringValue">
+            <AntDesign.SelectOption Value="@PageRangeType.All.ToString()">All</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageRangeType.Custom.ToString()">Custom</AntDesign.SelectOption>
+        </Select>
+    </FormItem>
+
+    @if(_value.Range == PageRangeType.Custom)
+    {
+        <FormItem Label="Range" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.PageRange" Placeholder="e.g., 1-5, 8, 11-13" Style="width:150px"/>
+        </FormItem>
+    }
+
+    <FormItem Label="Paper Size" Style="margin-bottom:10px;">
+        <Select Style="width:120px" DefaultValue="@PageSizeType.Letter.ToString()" @bind-Value="@_value.SizeStringValue" OnChange="OnPageSizeChange">
+            <AntDesign.SelectOption Value="@PageSizeType.A0.ToString()">A0</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.A1.ToString()">A1</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.A2.ToString()">A2</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.A3.ToString()">A3</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.A4.ToString()">A4</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.A5.ToString()">A5</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.Ledger.ToString()">Ledger</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.Legal.ToString()">Legal</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.Letter.ToString()">Letter</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.Tabloid.ToString()">Tabloid</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageSizeType.Custom.ToString()">Custom</AntDesign.SelectOption>
+        </Select>
+    </FormItem>
+
+    @if(_value.Size == PageSizeType.Custom)
+    {
+        <FormItem Label="Height" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.Height" Placeholder="e.g., 11in" Style="width:150px"/>
+        </FormItem>
+
+        <FormItem Label="Width" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.Width" Placeholder="e.g., 8.5in" Style="width:150px"/>
+        </FormItem>
+    }
+
+    <FormItem Label="Margins" Style="margin-bottom:10px;">
+        <Select Style="width:120px" OnChange="OnCustomMarginChange" DefaultValue="@PageMarginType.Default.ToString()" @bind-Value="@_value.MarginStringValue">
+            <AntDesign.SelectOption Value="@PageMarginType.Default.ToString()">Default</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PageMarginType.Custom.ToString()">Custom</AntDesign.SelectOption>
+        </Select>
+    </FormItem>
+
+    @if(_value.Margin == PageMarginType.Custom)
+    {
+        <FormItem Label="Left" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.MarginLeft" Placeholder="e.g., 0.2in" Style="width:100px"/>
+        </FormItem>
+        <FormItem Label="Right" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.MarginRight" Placeholder="e.g., 0.2in" Style="width:100px"/>
+        </FormItem>
+        <FormItem Label="Top" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.MarginTop" Placeholder="e.g., 0.2in" Style="width:100px"/>
+        </FormItem>
+        <FormItem Label="Bottom" Style="margin-bottom:10px;">
+            <AntDesign.Input @bind-Value="@_value.MarginBottom" Placeholder="e.g., 0.2in" Style="width:100px"/>
+        </FormItem>
+    }
+
+</Form>
+
+
+@code
+{
+    private RenderOptionsViewModel _value = new RenderOptionsViewModel();
+
+    [Parameter]
+    public RenderOptionsViewModel Options
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            Console.WriteLine("value changed");
+            OptionsChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<RenderOptionsViewModel> OptionsChanged { get; set; }
+
+    private void OnPageSizeChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<AntDesign.SelectOption, IEnumerable<AntDesign.SelectOption>> option)
+    {
+        this.StateHasChanged();
+    }
+
+    private void OnPageRangeChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<AntDesign.SelectOption, IEnumerable<AntDesign.SelectOption>> option)
+    {
+        this.StateHasChanged();
+    }
+
+
+    private void OnCustomMarginChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<AntDesign.SelectOption, IEnumerable<AntDesign.SelectOption>> option)
+    {
+        this.StateHasChanged();
+    }
+}
+

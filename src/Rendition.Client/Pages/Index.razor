@@ -1,7 +1,84 @@
 ﻿@page "/"
+@using Rendition.Client.Components
+@using PlaywrightSharp
+@using System.ComponentModel.DataAnnotations
+@using Core.Models;
+@using System.Text.Json;
+@using System.Net.Http
+@inject HttpClient Http
+@using Models
 
-<h1>Hello, world!</h1>
+<div style="
+    margin-top:30vh;
+    max-width:800px;
+    min-width:600px;
+">
+ 
+<div>
+   <Drawer Closable="true" Visible="visible" Placement="right" Title='("Advanced Settings")' OnClose="_=>close()" Width="400">
+    <RenderOptionsComponent @bind-Options="_options">
 
-Welcome to your new app.
+    </RenderOptionsComponent>
+    </Drawer>
+    <div style="display:flex;justify-content:flex-end;">   
+        <Button Icon="setting" Type="link" @onclick="_=>open()" >Advanced Settings</Button> 
+    </div>
+    <Tabs DefaultActiveKey="1" TabPosition="@TabPosition.Left" Size="@TabSize.Large">
+        <TabPane Key="1" ForceRender="true">
+            <Tab>
+                Url
+            </Tab>
+            <ChildContent>
+                <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.7)">
+                   <UrlRenderComponent Options="_options" />
+                </Animate>
+            </ChildContent>
+        </TabPane>
+        <TabPane Key="2" ForceRender="true">
+            <Tab>HTML</Tab>
+            <ChildContent>
+                <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.7)">
+                    <HtmlRenderComponent Options="_options" />
+                </Animate>
+            </ChildContent>
+        </TabPane>
+        <TabPane Key="3">
+            <Tab>Razor</Tab>
+            <ChildContent>
+                <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromSeconds(0.7)">
+                    <RazorRenderComponent Options="_options" />
+                </Animate>
+            </ChildContent>
+        </TabPane>
+    </Tabs>
+</div>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+
+    private RenderOptionsViewModel _options = new RenderOptionsViewModel();
+
+    bool visible = false;
+
+    void open()
+    {
+
+        visible = true;
+    }
+
+    void close()
+    {
+        visible = false;
+    }
+
+    public Index()
+    {
+       
+    }
+
+    private void SettingsValueChanged(RenderOptions settings)
+    {
+
+    }  
+}
+
