@@ -19,6 +19,7 @@ namespace Rendition.Core.Models
         public double Scale { get; set; } = 1;
         public string Width { get; set; }
         public string Height { get; set; }
+        public PrintMediaType Media { get; set; } = PrintMediaType.Default;
         public PageMarginType Margin 
         {
             get 
@@ -103,5 +104,12 @@ namespace Rendition.Core.Models
     {
         All,
         Custom
+    }
+
+    public enum PrintMediaType
+    {
+        Default,
+        Screen,
+        Print
     }
 }

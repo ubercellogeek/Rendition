@@ -85,5 +85,21 @@ namespace Rendition.Server.Extensions
             return opts;
 
         }
+
+        public static MediaType? AsMediaType(this RenderOptions options)
+        {
+            if(options.Media == PrintMediaType.Print)
+            {
+                return MediaType.Print;
+            }
+            else if(options.Media == PrintMediaType.Screen)
+            {
+                return MediaType.Screen;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

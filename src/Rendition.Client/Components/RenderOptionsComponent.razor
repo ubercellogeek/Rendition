@@ -87,6 +87,14 @@
         </FormItem>
     }
 
+    <FormItem Label="Media" Style="margin-bottom:10px;">
+        <Select Style="width:120px" OnChange="OnMediaChange" DefaultValue="@PrintMediaType.Default.ToString()" @bind-Value="@_value.MediaStringValue">
+            <AntDesign.SelectOption Value="@PrintMediaType.Default.ToString()">Default</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PrintMediaType.Print.ToString()">Print</AntDesign.SelectOption>
+            <AntDesign.SelectOption Value="@PrintMediaType.Screen.ToString()">Screen</AntDesign.SelectOption>
+        </Select>
+    </FormItem>
+
 </Form>
 
 
@@ -120,8 +128,12 @@
         this.StateHasChanged();
     }
 
-
     private void OnCustomMarginChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<AntDesign.SelectOption, IEnumerable<AntDesign.SelectOption>> option)
+    {
+        this.StateHasChanged();
+    }
+
+     private void OnMediaChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<AntDesign.SelectOption, IEnumerable<AntDesign.SelectOption>> option)
     {
         this.StateHasChanged();
     }

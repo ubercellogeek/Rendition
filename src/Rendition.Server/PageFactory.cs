@@ -44,7 +44,8 @@ namespace Rendition.Server
 
                 _logger.LogInformation("Downloading browser");
                 var rinfo = await _browserFetcher.DownloadAsync();
-                _logger.LogInformation("Browser downloaded to: {0}", _configuration.InstallPath);
+                _logger.LogInformation("Browser downloaded to: {0}", rinfo.ExecutablePath);
+
                 try
                 {
                     _instance = await _browserType.LaunchAsync(new LaunchOptions() {
@@ -52,13 +53,14 @@ namespace Rendition.Server
                     ExecutablePath = rinfo.ExecutablePath,
                     Headless = true
                     });
+
+                    _logger.LogInformation("Browser launched. Data path: {0}", _configuration.TempDataPath);
                 }
                 catch (System.Exception ex)
                 {
+                    _logger.LogError("There was an error while trying to launch the browser. {0}", ex);
                     throw;
                 }
-                
-                _logger.LogInformation("Browser launched. Data path: {0}", _configuration.TempDataPath);
             }
 
             var page = await _instance.DefaultContext.NewPageAsync();

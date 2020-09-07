@@ -68,5 +68,26 @@ namespace Rendition.Client.Models
             }
         }
 
+        public string MediaStringValue
+        {
+            get
+            {
+                return base.Media.ToString();
+            }
+            set
+            {
+                PrintMediaType t;
+
+                if(Enum.TryParse<PrintMediaType>(value, true, out t))
+                {
+                    base.Media = t;
+                }
+                else
+                {
+                    throw new ArgumentException($"Invalid PrintMediaType supplied: '{value}'");
+                }
+            }
+        }
+
     }
 }

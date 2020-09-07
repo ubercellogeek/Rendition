@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PlaywrightSharp;
@@ -26,12 +27,19 @@ namespace Rendition.Server
                 page = await _factory.CreatePageAsync();
 
                 await page.SetContentAsync(html);
+                var media = options.AsMediaType();
+                if (media != null)
+                {
+                    await page.EmulateMediaAsync(new EmulateMedia() { Media = media });
+                }
+
                 var result = await page.GetPdfDataAsync(options.AsPdfOptions());
 
                 return result;
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Error while rendering html: {0}", ex);
                 throw;
             }
             finally
@@ -49,13 +57,19 @@ namespace Rendition.Server
                 page = await _factory.CreatePageAsync();
 
                 var response = await page.GoToAsync(url);
-                await page.EmulateMediaAsync(new EmulateMedia() { Media = MediaType.Screen });
+                var media = options.AsMediaType();
+                if (media != null)
+                {
+                    await page.EmulateMediaAsync(new EmulateMedia() { Media = media });
+                }
+
                 var result = await page.GetPdfDataAsync(options.AsPdfOptions());
 
                 return result;
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Error while rendering url: {0}", ex);
                 throw;
             }
             finally
