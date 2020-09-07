@@ -49,6 +49,7 @@ namespace Rendition.Server
                 page = await _factory.CreatePageAsync();
 
                 var response = await page.GoToAsync(url);
+                await page.EmulateMediaAsync(new EmulateMedia() { Media = MediaType.Screen });
                 var result = await page.GetPdfDataAsync(options.AsPdfOptions());
 
                 return result;

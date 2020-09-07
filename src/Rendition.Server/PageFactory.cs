@@ -53,7 +53,7 @@ namespace Rendition.Server
                     Headless = true
                     });
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
                     throw;
                 }

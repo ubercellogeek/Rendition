@@ -29,7 +29,8 @@ namespace Rendition.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.Configure<RenditionServerConfiguration>(Configuration);
+      
+            services.Configure<RenditionServerConfiguration>(Configuration.GetSection("RenditionServerConfiguration"));
             services.AddSingleton<IPageFactory, PageFactory>();
             services.AddScoped<IPdfRenderer, PdfRenderer>();
             services.AddScoped<IPdfRepository, PdfRepository>();
@@ -46,8 +47,6 @@ namespace Rendition.Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
